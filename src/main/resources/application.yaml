@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: payment
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment_db
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
