@@ -6,12 +6,12 @@ import java.util.UUID;
 
 public class Payment {
 
-    private UUID id;
-    private UUID userId;
-    private UUID orderId;
-    private BigDecimal amount;
+    private final UUID id;
+    private final UUID userId;
+    private final UUID orderId;
+    private final BigDecimal amount;
     private PaymentStatus status;
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Payment(UUID userId, UUID orderId, BigDecimal amount) {
@@ -26,6 +26,17 @@ public class Payment {
         this.amount = amount;
         this.createdAt = LocalDateTime.now();
         this.status = PaymentStatus.PENDING;
+        this.updatedAt = null;
+    }
+
+    public Payment(UUID id, UUID userId, UUID orderId, BigDecimal amount, PaymentStatus status, LocalDateTime createdAt, LocalDateTime updatedAt){
+        this.id = id;
+        this.userId = userId;
+        this.orderId = orderId;
+        this.amount = amount;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public void approve() {
