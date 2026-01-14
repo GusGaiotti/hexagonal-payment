@@ -21,6 +21,6 @@ public class PaymentRepositoryAdapter implements PaymentRepositoryPort {
 
         PaymentEntity savedEntity = springPaymentRepository.save(entity);
 
-        return payment;
+        return paymentMapper.toDomain(savedEntity);
     }
 }
