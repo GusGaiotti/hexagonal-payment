@@ -5,6 +5,7 @@ import com.gus.payment.core.ports.PaymentEventPublisherPort;
 import com.gus.payment.infrastructure.config.RabbitMQConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,11 +14,17 @@ public class RabbitMQPaymentPublisherAdapter implements PaymentEventPublisherPor
 
     private final RabbitTemplate rabbitTemplate;
 
+    @Value("${rabbitmq.exchange}")
+    private String exchangeName;
+
+    @Value("${rabbitmq.routing-key}")
+    private String routingKey;
+
     @Override
     public void publish(PaymentCreatedEvent event) {
         rabbitTemplate.convertAndSend(
-                RabbitMQConfig.PAYMENT_EXCHANGE,
-                RabbitMQConfig.ROUTING_KEY,
+                exchangeName,
+                routingKey,
                 event
         );
     }

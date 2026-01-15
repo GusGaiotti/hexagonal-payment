@@ -1,35 +1,37 @@
 package com.gus.payment.infrastructure.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String PAYMENT_EXCHANGE = "payment.events";
-    public static final String PAYMENT_CREATED_QUEUE = "payment.created.queue";
-    public static final String ROUTING_KEY = "payment.created";
+    @Value("${rabbitmq.exchange}")
+    private String exchangeName;
+
+    @Value("${rabbitmq.queue}")
+    private String queueName;
+
+    @Value("${rabbitmq.routing-key}")
+    private String routingKey;
 
     @Bean
     public Queue paymentCreatedQueue() {
-        // durable = true (se o RabbitMQ reiniciar, a fila não some)
-        return new Queue(PAYMENT_CREATED_QUEUE, true);
+        return new Queue(queueName, true);
     }
 
     @Bean
     public TopicExchange paymentExchange() {
-        return new TopicExchange(PAYMENT_EXCHANGE);
+        return new TopicExchange(exchangeName);
     }
 
     @Bean
     public Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
+        return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
     @Bean

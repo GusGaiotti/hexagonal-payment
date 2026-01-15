@@ -17,8 +17,11 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: update
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: ${RABBITMQ_USER:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
+rabbitmq:
+  host: localhost
+  port: 5672
+  username: ${RABBITMQ_USER:guest}
+  password: ${RABBITMQ_PASSWORD:guest}
+  exchange: payment.v1.events
+  queue: wallet.v1.payment-created.consumer
+  routing-key: payment.created
