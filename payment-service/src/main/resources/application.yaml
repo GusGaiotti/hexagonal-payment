@@ -3,9 +3,9 @@ spring:
     name: payment
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/payment_db
-    username: admin
-    password: admin
+    url: jdbc:postgresql://localhost:5432/${DB_NAME_PAYMENT:payment_db}
+    username: ${DB_USER:admin}
+    password: ${DB_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -20,5 +20,5 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: guest
-    password: guest
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}

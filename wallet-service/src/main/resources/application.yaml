@@ -1,10 +1,13 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: wallet-service
   datasource:
-    url: jdbc:postgresql://localhost:5433/wallet_db
-    username: admin
-    password: admin
+    url: jdbc:postgresql://localhost:5433/${DB_NAME_WALLET:wallet_db}
+    username: ${DB_USER:admin}
+    password: ${DB_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -16,8 +19,8 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: user
-    password: password
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
 
 rabbitmq:
   queue:

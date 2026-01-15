@@ -2,10 +2,7 @@ package com.gus.payment.infrastructure.adapters.output.persistance.entities;
 
 import com.gus.payment.core.domain.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,6 +11,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "payments")
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentEntity {
