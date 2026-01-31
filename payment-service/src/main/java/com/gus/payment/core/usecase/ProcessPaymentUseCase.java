@@ -4,12 +4,16 @@ import com.gus.payment.core.domain.Payment;
 import com.gus.payment.core.events.PaymentCreatedEvent;
 import com.gus.payment.core.ports.PaymentEventPublisherPort;
 import com.gus.payment.core.ports.PaymentRepositoryPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
-
 public class ProcessPaymentUseCase {
+
+    private static final Logger log = LoggerFactory.getLogger(ProcessPaymentUseCase.class);
 
     private final PaymentRepositoryPort paymentRepository;
     private final PaymentEventPublisherPort paymentEventPublisher;
@@ -21,8 +25,14 @@ public class ProcessPaymentUseCase {
     }
 
     public Payment execute(UUID userId, UUID orderId, BigDecimal amount) {
-        Payment payment = new Payment(userId, orderId, amount);
 
+        Optional<Payment> existingPayment = paymentRepository.findByOrderId(orderId);
+        if (existingPayment.isPresent()) {
+            log.info("Payment já existe para orderId: {}. Retornando payment existente.", orderId);
+            return existingPayment.get();
+        }
+
+        Payment payment = new Payment(userId, orderId, amount);
         Payment savedPayment = paymentRepository.save(payment);
 
         PaymentCreatedEvent event = new PaymentCreatedEvent(
@@ -35,6 +45,7 @@ public class ProcessPaymentUseCase {
 
         paymentEventPublisher.publish(event);
 
+        log.info("Payment criado com sucesso: {}", savedPayment.getId());
         return savedPayment;
     }
 }

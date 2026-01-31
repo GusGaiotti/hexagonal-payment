@@ -1,6 +1,5 @@
 package com.gus.payment.infrastructure.adapters.output.persistance.entities;
 
-import com.gus.payment.core.domain.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +22,7 @@ public class PaymentEntity {
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
-    @Column(name = "order_id", nullable = false)
+    @Column(name = "order_id", nullable = false, unique = true)
     private UUID orderId;
 
     @Column(nullable = false)
@@ -37,5 +36,4 @@ public class PaymentEntity {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
 }

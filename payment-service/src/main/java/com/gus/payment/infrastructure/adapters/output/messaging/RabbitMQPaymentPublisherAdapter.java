@@ -2,7 +2,6 @@ package com.gus.payment.infrastructure.adapters.output.messaging;
 
 import com.gus.payment.core.events.PaymentCreatedEvent;
 import com.gus.payment.core.ports.PaymentEventPublisherPort;
-import com.gus.payment.infrastructure.config.RabbitMQConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;

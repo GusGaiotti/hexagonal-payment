@@ -8,6 +8,9 @@ import com.gus.payment.infrastructure.adapters.output.persistance.repositories.S
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class PaymentRepositoryAdapter implements PaymentRepositoryPort {
@@ -18,9 +21,13 @@ public class PaymentRepositoryAdapter implements PaymentRepositoryPort {
     @Override
     public Payment save(Payment payment) {
         PaymentEntity entity = paymentMapper.toEntity(payment);
-
         PaymentEntity savedEntity = springPaymentRepository.save(entity);
-
         return paymentMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<Payment> findByOrderId(UUID orderId) {
+        return springPaymentRepository.findByOrderId(orderId)
+                .map(paymentMapper::toDomain);
     }
 }
