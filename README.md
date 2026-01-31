@@ -42,7 +42,7 @@ O projeto adota a **Arquitetura Hexagonal (Ports & Adapters)** para garantir o d
 
 O MVP atual foca no fluxo básico do **Core Bancário**. As próximas sprints focarão em consistência forte e integrações:
 
-* [ ] **Idempotência & Ledger:** Implementar tabela de transações (`wallet_transactions`) com Unique Constraint no `payment_id` para garantir que o mesmo evento não seja processado duas vezes.
+* [X] **Idempotência & Ledger:** Implementar tabela de transações (`wallet_transactions`) com Unique Constraint no `payment_id` para garantir que o mesmo evento não seja processado duas vezes.
 * [ ] **Authorizer Externo (Gateway):** Implementar um Adapter no Payment Service para consultar um mock de autorização antes da publicação do evento.
 * [ ] **Notification Service:** Criar um terceiro microsserviço (Consumer) que escuta o mesmo evento para envio de e-mail/SMS (Pattern: Fan-out).
 * [ ] **Tratamento de Falhas (DLQ):** Implementar *Dead Letter Queues* para reprocessamento manual de mensagens.
