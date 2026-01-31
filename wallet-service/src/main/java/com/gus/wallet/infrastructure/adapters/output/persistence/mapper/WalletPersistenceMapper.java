@@ -1,7 +1,9 @@
 package com.gus.wallet.infrastructure.adapters.output.persistence.mapper;
 
 import com.gus.wallet.core.domain.Wallet;
+import com.gus.wallet.core.domain.WalletTransaction;
 import com.gus.wallet.infrastructure.adapters.output.persistence.entity.WalletEntity;
+import com.gus.wallet.infrastructure.adapters.output.persistence.entity.WalletTransactionEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,5 +27,15 @@ public class WalletPersistenceMapper {
                 entity.getUserId(),
                 entity.getBalance()
         );
+    }
+
+    public WalletTransactionEntity toTransactionEntity(WalletTransaction domain) {
+        return WalletTransactionEntity.builder()
+                .id(domain.getId())
+                .walletId(domain.getWalletId())
+                .paymentId(domain.getPaymentId())
+                .amount(domain.getAmount())
+                .createdAt(domain.getCreatedAt())
+                .build();
     }
 }

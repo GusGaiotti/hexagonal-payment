@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record PaymentEvent(
-        UUID id,
+        UUID paymentId,
         UUID userId,
         UUID orderId,
         BigDecimal amount,

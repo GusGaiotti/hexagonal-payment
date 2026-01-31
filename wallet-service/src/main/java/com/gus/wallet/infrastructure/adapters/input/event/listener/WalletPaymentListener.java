@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -15,17 +16,16 @@ public class WalletPaymentListener {
     private final DebitWalletUseCase debitWalletUseCase;
 
     @RabbitListener(queues = "${rabbitmq.queue.name}")
+    @Transactional
     public void receivePaymentCreatedEvent(PaymentEvent event) {
 
         log.info("Evento recebido: {}", event);
 
         try {
-            debitWalletUseCase.execute(event.userId(), event.amount());
-
-            log.info("Débito processado com sucesso para User: {}", event.userId());
-
+            debitWalletUseCase.execute(event.userId(), event.paymentId(), event.amount());
         } catch (Exception e) {
             log.error("Falha ao processar débito: {}", e.getMessage());
+            throw e;
         }
     }
 }
