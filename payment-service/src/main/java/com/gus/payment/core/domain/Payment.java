@@ -39,22 +39,19 @@ public class Payment {
         this.updatedAt = updatedAt;
     }
 
-    public void approve() {
-
+    public void authorize() {
         if (this.status != PaymentStatus.PENDING) {
-            throw new IllegalStateException("Payment cannot be approved in current status: " + this.status);
+            throw new IllegalStateException("Payment cannot be authorized. Current status: " + this.status);
         }
-        this.status = PaymentStatus.APPROVED;
+        this.status = PaymentStatus.AUTHORIZED;
         this.updatedAt = LocalDateTime.now();
     }
 
     public void reject(){
-
         if (this.status != PaymentStatus.PENDING) {
-            throw new IllegalStateException("Payment is already: " + this.status);
+            throw new IllegalStateException("Payment cannot be refused. Current status: " + this.status);
         }
-
-        this.status = PaymentStatus.REJECTED;
+        this.status = PaymentStatus.REFUSED;
         this.updatedAt = LocalDateTime.now();
     }
 

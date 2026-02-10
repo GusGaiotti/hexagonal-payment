@@ -4,6 +4,7 @@ import com.gus.payment.core.domain.Payment;
 import com.gus.payment.core.events.PaymentCreatedEvent;
 import com.gus.payment.core.ports.PaymentEventPublisherPort;
 import com.gus.payment.core.ports.PaymentRepositoryPort;
+import com.gus.payment.core.ports.PaymentValidatorPort; // Import Novo
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,11 +18,14 @@ public class ProcessPaymentUseCase {
 
     private final PaymentRepositoryPort paymentRepository;
     private final PaymentEventPublisherPort paymentEventPublisher;
+    private final PaymentValidatorPort paymentValidator;
 
     public ProcessPaymentUseCase(PaymentRepositoryPort paymentRepository,
-                                 PaymentEventPublisherPort paymentEventPublisher) {
+                                 PaymentEventPublisherPort paymentEventPublisher,
+                                 PaymentValidatorPort paymentValidator) {
         this.paymentRepository = paymentRepository;
         this.paymentEventPublisher = paymentEventPublisher;
+        this.paymentValidator = paymentValidator;
     }
 
     public Payment execute(UUID userId, UUID orderId, BigDecimal amount) {
@@ -33,19 +37,33 @@ public class ProcessPaymentUseCase {
         }
 
         Payment payment = new Payment(userId, orderId, amount);
-        Payment savedPayment = paymentRepository.save(payment);
+        payment = paymentRepository.save(payment);
+        log.info("Pagamento iniciado (PENDING). ID: {}", payment.getId());
 
-        PaymentCreatedEvent event = new PaymentCreatedEvent(
-                savedPayment.getId(),
-                savedPayment.getUserId(),
-                savedPayment.getOrderId(),
-                savedPayment.getAmount(),
-                savedPayment.getStatus().name()
-        );
+        try {
+            paymentValidator.validate(payment.getId(), payment.getAmount());
 
-        paymentEventPublisher.publish(event);
+            payment.authorize();
+            paymentRepository.save(payment);
 
-        log.info("Payment criado com sucesso: {}", savedPayment.getId());
-        return savedPayment;
+            PaymentCreatedEvent event = new PaymentCreatedEvent(
+                    payment.getId(),
+                    payment.getUserId(),
+                    payment.getOrderId(),
+                    payment.getAmount(),
+                    payment.getStatus().name()
+            );
+            paymentEventPublisher.publish(event);
+
+            log.info("Pagamento autorizado e enviado para liquidação. ID: {}", payment.getId());
+
+        } catch (Exception e) {
+            log.warn("Pagamento recusado pelo Antifraude. Motivo: {}", e.getMessage());
+
+            payment.reject();
+            paymentRepository.save(payment);
+        }
+
+        return payment;
     }
 }
